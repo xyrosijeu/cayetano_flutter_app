@@ -8,123 +8,246 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Initiate Nene Cortel Inc.',
+      title: 'Initiate Nene Cortel Inc',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: Color(0xFF536DFE),
+        scaffoldBackgroundColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          primary: Color.fromARGB(255, 0, 0, 0),
+          secondary: Color.fromARGB(255, 228, 227, 227),
+        ),
       ),
-      home: MyHomePage(key: UniqueKey(), title: 'My Responsive App'),
+      home: MyHomePage(title: 'My Responsive App'),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   final String title;
 
-  MyHomePage({required Key key, required this.title}) : super(key: key);
+  MyHomePage({required this.title});
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.title),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            UserAccountsDrawerHeader(
-              accountName: Text('User Name'),
-              accountEmail: Text('user@example.com'),
-              currentAccountPicture: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Text(
-                  'U',
-                  style: TextStyle(fontSize: 40.0),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              SizedBox(height: 40),
+              Text(
+                'Initiate Nene Cortel Inc.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
-            ),
-            ListTile(
-              title: Text('Item 1'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
+              SizedBox(height: 20),
+              Text(
+                'Login to Continue',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20),
+              ),
+              SizedBox(height: 40),
+              Card(
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'User',
+                            border: OutlineInputBorder(),
+                          ),
+                          style: TextStyle(fontSize: 16),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your username';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 16),
+                        TextFormField(
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            border: OutlineInputBorder(),
+                          ),
+                          style: TextStyle(fontSize: 16),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your password';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 16),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Forgot Password tapped'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'Forgot Password?',
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Google is clicked'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(color: Colors.grey),
+                            ),
+                          ),
+                          icon: Image.asset(
+                            'images/google.png',
+                            height: 24,
+                          ),
+                          label: Text(
+                            'Login with Google',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Facebook is clicked'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(color: Colors.grey),
+                            ),
+                          ),
+                          icon: Image.asset(
+                            'images/facebook.png',
+                            height: 24,
+                          ),
+                          label: Text(
+                            'Login with Facebook',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        _isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : ElevatedButton(
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    setState(() {
+                                      _isLoading = true;
+                                    });
+                                    // Add your login logic here
+                                    // Simulating a delay of 2 seconds
+                                    Future.delayed(Duration(seconds: 2), () {
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text('Login Successful'),
+                                          duration: Duration(seconds: 2),
+                                        ),
+                                      );
+                                    });
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Theme.of(context).primaryColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12.0,
+                                  ),
+                                  child: Text(
+                                    'Login',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                              ),
+                        SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Don't have an account? "),
+                            TextButton(
+                              onPressed: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Sign Up tapped'),
+                                    duration: Duration(seconds: 2),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                'Sign Up',
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Hello Earth',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Login to Continue',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'User',
-              ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Password',
-              ),
-            ),    
-            SizedBox(height: 16),
-            TextButton(onPressed: () {}, child: Text('Forgot Password')),     
-            ElevatedButton(
-              onPressed: () {
-                // Add your login logic here
-              },
-              child: Text('Login'),
-            ),
-            Text('Or Sign in With'),
-            ElevatedButton(onPressed: () {
-              print('google is clicked');
-              },
-              child: Row(children: [
-                Image.asset('images/google1.png', height: 22, width: 22,
-                ),
-                Text('Log in with google'),
-                ],
-                )),
-                ElevatedButton(
-              onPressed: () {
-                // Add your login logic here
-              },
-              child: Text('Login'),
-            ),
-            Text('Or Sign in With'),
-            ElevatedButton(onPressed: () {
-              print('google is clicked');
-              },
-              child: Row(children: [
-                Image.asset('images/facebook.png', height: 22, width: 22,
-                ),
-                Text('Log in with Facebook'),
-                ],
-                ))
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add your action here
-        },
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
       ),
     );
   }
